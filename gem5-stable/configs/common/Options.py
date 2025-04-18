@@ -455,6 +455,10 @@ def addSEOptions(parser):
     parser.add_argument("--wait-gdb", default=False, action='store_true',
                         help="Wait for remote GDB to connect.")
 
+    # lab3 add
+    parser.add_argument("--replace", default="",
+                        help="Replacement policy to use for the cache")
+
 
 def addFSOptions(parser):
     from common.FSConfig import os_types

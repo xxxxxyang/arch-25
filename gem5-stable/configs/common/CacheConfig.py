@@ -104,6 +104,19 @@ def config_cache(options, system):
         if buildEnv['TARGET_ISA'] in ['x86', 'riscv']:
             walk_cache_class = PageTableWalkerCache
 
+    # lab3
+    if options.replace == "random":
+        replace_policy = RandomRP()
+    elif options.replace == "lru":
+        replace_policy = LRURP()
+    elif options.replace == "nmru":
+        replace_policy = NMRURP()
+    elif options.replace == "lip":
+        replace_policy = LIPRP()
+    else:
+        print("Defaulting to LRU replacement policy")
+        replace_policy = LRURP()
+
     # Set the cache line size of the system
     system.cache_line_size = options.cacheline_size
 
@@ -120,6 +133,7 @@ def config_cache(options, system):
         # same clock as the CPUs.
         system.l2 = l2_cache_class(clk_domain=system.cpu_clk_domain,
                                    **_get_cache_opts('l2', options))
+        system.l2.replacement_policy = replace_policy
 
         system.tol2bus = L2XBar(clk_domain = system.cpu_clk_domain)
         system.l2.cpu_side = system.tol2bus.mem_side_ports
@@ -131,7 +145,8 @@ def config_cache(options, system):
     for i in range(options.num_cpus):
         if options.caches:
             icache = icache_class(**_get_cache_opts('l1i', options))
-            dcache = dcache_class(**_get_cache_opts('l1d', options))
+            dcache = dcache_class(**_get_cache_opts('l1d', options), replacement_policy=replace_policy)
+            # dcache_class.replacement_policy = replace_policy
 
             # If we have a walker cache specified, instantiate two
             # instances here
