@@ -51,19 +51,31 @@
 - **写回次数** `system.cpu.dcache.writebacks::total` l2 与 l1D 的写回次数是一致的，l2具有 writebackclean 是一种同步机制保证缓存一致性
 - **平均未命中延迟** `system.cpu.dcache.overallAvgMissLatency::total`, `system.l2.overallAvgMissLatency::total`
 
-实验配置与相应指标
+**实验配置与相应指标**
 
-| 配置名            | CPI     | L1D MissRate | L1D MissLatency | L1D Writeback | L1D WriteReq MissRate | L1D Repl | L2 MissRate | L2 MissLatency | L2 Repl |
-|-------------------|---------|--------------|------------------|---------------|------------------------|----------|--------------|----------------|---------|
-| **random_assoc4** | 0.5566  | 0.0706       | 20557.71         | 15698         | 0.00841                | 25933    | 0.1376       | 79389.61       | 0       |
-| **random_assoc8** | 0.5604  | 0.0743       | 20221.76         | 15918         | 0.00473                | 26787    | 0.1335       | 80151.34       | 0       |
-| **random_assoc16** | 0.5615  | 0.0762       | 19936.34         | 15887         | 0.00276                | 27185    | 0.1316       | 80318.58       | 0       |
-| **nmru_assoc4** | 0.5551  | 0.0664       | 21129.78         | 14857         | 0.00165                | 23554    | 0.1507       | 79751.52       | 0       |
-| **nmru_assoc8** | 0.5598  | 0.0725       | 20300.34         | 15544         | 0.00135            | 25577    | 0.1394       | 79702.62       | 1       |
-| **nmru_assoc16** | 0.5618  | 0.0759       | 19881.27         | 15856         | 0.00129                | 26681    | 0.1340       | 79588.66       | 2       |
-| **lip_assoc4** | 0.5670  | 0.0776       | 20051.09         | 23002         | 0.02779                | 30770    | 0.1170       | 79117.68       | 0       |
-| **lip_assoc8** | 0.6083  | 0.1112       | 18159.50         | 36385         | 0.02957                | 44289    | 0.0824       | 80008.22       | 0       |
-| **lip_assoc16** | 0.6092  | 0.1125       | 18163.86         | 36834         | 0.03120                | 45008    | 0.0812       | 79572.09       | 0       |
+| 配置名            | CPI     | L1D MissRate | L1D MissLatency | L1D Writeback | L1D WriteReq MissRate | L1D Repl |
+|-------------------|---------|--------------|------------------|---------------|------------------------|----------|
+| **random_assoc4** | 0.5566  | 0.0706       | 20557.71         | 15698         | 0.00841                | 25933    |
+| **random_assoc8** | 0.5604  | 0.0743       | 20221.76         | 15918         | 0.00473                | 26787    |
+| **random_assoc16** | 0.5615  | 0.0762       | 19936.34         | 15887         | 0.00276                | 27185    |
+| **nmru_assoc4**   | 0.5551  | 0.0664       | 21129.78         | 14857         | 0.00165                | 23554    |
+| **nmru_assoc8**   | 0.5598  | 0.0725       | 20300.34         | 15544         | 0.00135                | 25577    |
+| **nmru_assoc16**  | 0.5618  | 0.0759       | 19881.27         | 15856         | 0.00129                | 26681    |
+| **lip_assoc4**    | 0.5670  | 0.0776       | 20051.09         | 23002         | 0.02779                | 30770    |
+| **lip_assoc8**    | 0.6083  | 0.1112       | 18159.50         | 36385         | 0.02957                | 44289    |
+| **lip_assoc16**   | 0.6092  | 0.1125       | 18163.86         | 36834         | 0.03120                | 45008    |
+
+| 配置名            | L2 MissRate | L2 MissLatency | L2 Repl |
+|-------------------|-------------|----------------|---------|
+| **random_assoc4** | 0.1376      | 79389.61       | 0       |
+| **random_assoc8** | 0.1335      | 80151.34       | 0       |
+| **random_assoc16** | 0.1316      | 80318.58       | 0       |
+| **nmru_assoc4**   | 0.1507      | 79751.52       | 0       |
+| **nmru_assoc8**   | 0.1394      | 79702.62       | 1       |
+| **nmru_assoc16**  | 0.1340      | 79588.66       | 2       |
+| **lip_assoc4**    | 0.1170      | 79117.68       | 0       |
+| **lip_assoc8**    | 0.0824      | 80008.22       | 0       |
+| **lip_assoc16**   | 0.0812      | 79572.09       | 0       |
 
 
 **可视化其中六个关键指标**
@@ -200,22 +212,35 @@ MOESI 协议能更有效地在多个 CPU 核心或处理器之间维护缓存的
 
 使用的脚本辅助命令为：
 ```bash
-grep "access for WriteReq" cache_trace.txt | grep "state: .* (S)" | head -n 10 # 查看 S 状态的写请求
-grep "access for WriteReq" cache_trace.txt | grep "state: .* (O)" | head -n 10 # 查看 O 状态的写请求
+# 查看 S 状态的写请求
+grep "access for WriteReq" cache_trace.txt | grep "state: .* (S)" | head -n 10
+# 查看 O 状态的写请求
+grep "access for WriteReq" cache_trace.txt | grep "state: .* (O)" | head -n 10
 
-grep "handleSnoop: snoop hit for ReadSharedReq" cache_trace.txt | grep "old state is state: .* (M)" | head -n 10  # 查看 M 状态的读请求
-grep "handleSnoop: snoop hit for ReadSharedReq" cache_trace.txt | grep "old state is state: .* (O)" | head -n 10  # 查看 O 状态的读请求
-grep "handleSnoop: snoop hit for ReadSharedReq" cache_trace.txt | grep "old state is state: .* (E)" | head -n 10  # 查看 E 状态的读请求
-grep "handleSnoop: snoop hit for ReadSharedReq" cache_trace.txt | grep "old state is state: .* (S)" | head -n 10  # 查看 S 状态的读请求
+# 查看 M 状态的读请求
+grep "handleSnoop: snoop hit for ReadSharedReq" cache_trace.txt | grep "old state is state: .* (M)" | head -n 10
+# 查看 O 状态的读请求
+grep "handleSnoop: snoop hit for ReadSharedReq" cache_trace.txt | grep "old state is state: .* (O)" | head -n 10
+# 查看 E 状态的读请求
+grep "handleSnoop: snoop hit for ReadSharedReq" cache_trace.txt | grep "old state is state: .* (E)" | head -n 10
+# 查看 S 状态的读请求
+grep "handleSnoop: snoop hit for ReadSharedReq" cache_trace.txt | grep "old state is state: .* (S)" | head -n 10
 
-grep "handleSnoop: snoop hit for ReadExReq" cache_trace.txt | grep "old state is state: .* (S)" | head -n 10   # 查看 S 状态的独占请求
-grep "handleSnoop: snoop hit for ReadExReq" cache_trace.txt | grep "old state is state: .* (M)" | head -n 10   # 查看 M 状态的独占请求
-grep "handleSnoop: snoop hit for ReadExReq" cache_trace.txt | grep "old state is state: .* (O)" | head -n 10   # 查看 O 状态的独占请求
-grep "handleSnoop: snoop hit for ReadExReq" cache_trace.txt | grep "old state is state: .* (E)" | head -n 10   # 查看 E 状态的独占请求 trace中没有
+# 查看 S 状态的独占请求
+grep "handleSnoop: snoop hit for ReadExReq" cache_trace.txt | grep "old state is state: .* (S)" | head -n 10
+# 查看 M 状态的独占请求
+grep "handleSnoop: snoop hit for ReadExReq" cache_trace.txt | grep "old state is state: .* (M)" | head -n 10
+# 查看 O 状态的独占请求
+grep "handleSnoop: snoop hit for ReadExReq" cache_trace.txt | grep "old state is state: .* (O)" | head -n 10
+# 查看 E 状态的独占请求 trace中没有
+grep "handleSnoop: snoop hit for ReadExReq" cache_trace.txt | grep "old state is state: .* (E)" | head -n 10
 
-grep "Replacement victim: state: .* (E)" cache_trace.txt | head -n 10   # 寻找替换块为 E 的请求
-grep "Replacement victim: state: .* (O)" cache_trace.txt | head -n 10   # 寻找替换块为 O 的请求
-grep "Replacement victim: state: .* (S)" cache_trace.txt | head -n 10   # 寻找替换块为 S 的请求 前10个中无法找到写缺失情况
+# 寻找替换块为 E 的请求
+grep "Replacement victim: state: .* (E)" cache_trace.txt | head -n 10
+# 寻找替换块为 O 的请求
+grep "Replacement victim: state: .* (O)" cache_trace.txt | head -n 10
+# 寻找替换块为 S 的请求 前10个中无法找到写缺失情况
+grep "Replacement victim: state: .* (S)" cache_trace.txt | head -n 10
 
 ```
 
