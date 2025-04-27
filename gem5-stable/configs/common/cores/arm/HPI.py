@@ -1325,7 +1325,11 @@ class HPI_FUPool(MinorFUPool):
         HPI_IntDivFU(), # 3
         HPI_FloatSimdFU(), # 4
         HPI_MemFU(), # 5
-        HPI_MiscFU() # 6
+        HPI_MiscFU(), # 6
+        # external SIMD/FU
+        HPI_FloatSimdFU(), # 7
+        HPI_FloatSimdFU(), # 8
+        HPI_FloatSimdFU()  # 9
         ]
 
 class HPI_MMU(ArmMMU):
