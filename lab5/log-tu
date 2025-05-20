@@ -1,0 +1,49 @@
+
+u=16 t=64
+equal!
+equal!
+equal!
+pass!
+N:  4096  time1: 100.919113159  time2: 69.395210266 time3: 90.230415344
+
+u=32 t=64
+equal!
+equal!
+equal!
+pass!
+N:  4096  time1: 101.622810364  time2: 67.737808228 time3: 55.620918274
+
+u=64 t=64
+equal!
+equal!
+equal!
+pass!
+N:  4096  time1: 102.139770508  time2: 69.080909729 time3: 38.724086761
+
+u=64 t=128
+equal!
+equal!
+equal!
+pass!
+N:  4096  time1: 101.871864319  time2: 69.472640991 time3: 37.262825012
+
+u=128 t=128
+equal!
+equal!
+equal!
+pass!
+N:  4096  time1: 101.779548645  time2: 68.352531433 time3: 29.284542084
+
+u=128 t=256
+equal!
+equal!
+equal!
+pass!
+N:  4096  time1: 101.315872192  time2: 69.040275574 time3: 34.198081970
+
+u=256 t=256
+equal!
+equal!
+equal!
+pass!
+N:  4096  time1: 101.825424194  time2: 68.852996826 time3: 39.084026337
